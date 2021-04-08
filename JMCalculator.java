@@ -1,28 +1,40 @@
 public class JMCalculator {
 
-	String input, arabic;
+	String[] input;
 
-	public boolean isArabic, isRoman, isInteger;
+	public int numberOfArabic = 0, numberOfRoman = 0, numberOfInteger;
 
 	double result;
 
-	public JMCalculator (String str) {
-		input = str;
+	public JMCalculator (String[] args) {
+		input = args;
 	}
 
-	public void parse() {
+	public void parse() throws Exception {
+		if (input.length == 0) throw new Exception("Exception: no arguments");
 
+		for (String s : input)
+            System.out.println(s);
+
+		if (numberOfArabic * numberOfRoman != 0) throw new Exception("Exception: numbers must be all arabic or all roman");
 	}
 
 	public String print() {
-		return input;
+		return String.valueOf(result);
 	}
 
 	public static void main (String[] args) {
-		JMCalculator calc = new JMCalculator(args[0]);
-		calc.parse();
-		if (!calc.isArabic || !calc.isRoman)
-			System.out.println("Exception! Numbers must be all arabic or all roman");
-		System.out.println(calc.print());
+
+		JMCalculator calc = new JMCalculator(args);
+
+		try {
+			calc.parse();
+		}
+		catch (Exception e)	{
+			System.out.println(e.getMessage());
+		}
+		finally {
+			System.out.println(calc.print());
+		}
 	}
 }
