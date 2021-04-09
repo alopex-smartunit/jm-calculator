@@ -24,9 +24,10 @@ public class JMCalculator {
 	}
 
 	public void parse() throws Exception {
-		String arabic = "", roman = "", number = "";
-		char op = ' ', oper = 0;
+		String arabic = "", roman = "";
+		char op = ' ';
 		boolean space = false;
+		int number = -1;
 
 		_debug("input: " + input);
 
@@ -47,10 +48,10 @@ public class JMCalculator {
 			else if (OPS.indexOf(ch) >= 0) {
 				if (arabic.length() == 0 && roman.length() == 0) throw new Exception("Exception: unexpected operator");
 				if (arabic.length() > 0) {
-					number = arabic; arabic = ""; numberOfArabic++;
+					number =  Integer.parseInt(arabic); arabic = ""; numberOfArabic++;
 				}
 				if (roman.length() > 0) {
-					number = roman; roman = ""; numberOfRoman++;
+					number = toArabic(roman); roman = ""; numberOfRoman++;
 				}
 				op = ch; space = false;
 			}
@@ -58,11 +59,11 @@ public class JMCalculator {
 				throw new Exception("Exception: illegal character");
 			}
 
-			if (number.length() > 0) {
-				_debug(number);
+			if (number >= 0) {
+				_debug("" + number);
 				polish.add(number);
 				_debug("->" + number);
-				number = "";
+				number = -1;
 			}
 			if (op != 0 && space == false) {
 				_debug("" + op);
@@ -79,6 +80,24 @@ public class JMCalculator {
 		_debug("numberOfRoman: " + numberOfRoman);
 		if (numberOfArabic * numberOfRoman != 0) throw new Exception("Exception: numbers must be all arabic or all roman");
 	}
+
+ 	public static int toArabic(String str) throws Exception {
+        if (str.equals("N") || str.equals("")) return 0;
+        if (str.startsWith("M")) return 1000 + toArabic(str.substring(1));
+        if (str.startsWith("CM")) return 900 + toArabic(str.substring(2));
+        if (str.startsWith("D")) return 500 + toArabic(str.substring(1));
+        if (str.startsWith("CD")) return 400 + toArabic(str.substring(2));
+        if (str.startsWith("C")) return 100 + toArabic(str.substring(1));
+        if (str.startsWith("XC")) return 90 + toArabic(str.substring(2));
+        if (str.startsWith("L")) return 50 + toArabic(str.substring(1));
+        if (str.startsWith("XL")) return 40 + toArabic(str.substring(2));
+        if (str.startsWith("X")) return 10 + toArabic(str.substring(1));
+        if (str.startsWith("IX")) return 9 + toArabic(str.substring(2));
+        if (str.startsWith("V")) return 5 + toArabic(str.substring(1));
+        if (str.startsWith("IV")) return 4 + toArabic(str.substring(2));
+        if (str.startsWith("I")) return 1 + toArabic(str.substring(1));
+        throw new Exception("Exception: error converting roman number");
+    }	
 
 	public String print() {
 		return String.valueOf(result);
