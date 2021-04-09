@@ -8,6 +8,8 @@ public class JMCalculator {
 
 	public int numberOfArabic = 0, numberOfRoman = 0;
 
+	public Polish polish = new Polish(true);
+
 	double result;
 
 	public JMCalculator (String[] args) throws Exception {
@@ -23,7 +25,7 @@ public class JMCalculator {
 
 	public void parse() throws Exception {
 		String arabic = "", roman = "", number = "";
-		char op = '$';
+		char op = ' ', oper = 0;
 		boolean space = false;
 
 		_debug("input: " + input);
@@ -58,10 +60,17 @@ public class JMCalculator {
 
 			if (number.length() > 0) {
 				_debug(number);
+				polish.add(number);
+				_debug("->" + number);
 				number = "";
 			}
 			if (op != 0 && space == false) {
 				_debug("" + op);
+				polish.addop(op);
+			}
+			if (op == '$') {
+				polish.end();
+				break;
 			}
 		}
 		if (op != 0 && op != '$') throw new Exception("Exception: last operand missed");
