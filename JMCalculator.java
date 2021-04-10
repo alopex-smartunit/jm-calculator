@@ -18,13 +18,13 @@ public class JMCalculator {
 	public JMCalculator (String[] args) throws Exception {
 		if (args.length != 0) {
 			if (args[0].equals("DEBUG")) CNST._DEBUG_ = true;
-			if (args.length > 1) {
-				input = String.join(" ", args).replaceFirst("DEBUG", "").toUpperCase() + "$";
+			if (args[0].equals("DEBUG") && args.length > 1 || !args[0].equals("DEBUG") && args.length > 0) {
+				input = String.join(" ", args).replaceFirst("DEBUG", "").toUpperCase().trim() + "$";
 				return;
 			}
 		}
 		Console console = System.console();
-		input = console.readLine("Enter expression: ") + "$";
+		input = console.readLine("Enter expression: ").toUpperCase().trim() + "$";
 	}
 
 	public void parse() throws Exception {
@@ -79,7 +79,8 @@ public class JMCalculator {
 
 		_debug("Number of arabic numbers: " + numberOfArabic);
 		_debug("Number of roman numbers: " + numberOfRoman);
-		if (numberOfArabic * numberOfRoman != 0) throw new Exception("Exception: numbers must be all arabic or all roman");
+		if ((numberOfArabic * numberOfRoman != 0) && !CNST._DEBUG_)
+			throw new Exception("Exception: numbers must be all arabic or all roman");
 	}
 
  	public static int toArabic(String str) throws Exception {
