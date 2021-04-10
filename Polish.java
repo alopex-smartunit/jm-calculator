@@ -3,7 +3,7 @@ import java.util.Stack;
 
 public class Polish extends ArrayList {
 
-	public Stack opstack = new Stack();
+	public Stack<Object> opstack = new Stack<>();
 
 	char lastop = 0;
 
