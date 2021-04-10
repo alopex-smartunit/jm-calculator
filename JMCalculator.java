@@ -1,3 +1,5 @@
+import java.io.Console;
+
 public class JMCalculator {
 
 	public static final String ARABIC = "0123456789", ROMAN = "NIVXLCDM", OPS = "+-*/$";
@@ -14,9 +16,15 @@ public class JMCalculator {
 	}
 
 	public JMCalculator (String[] args) throws Exception {
-		if (args.length == 0) throw new Exception("Exception: no arguments");
-		if (args[0].equals("DEBUG")) CNST._DEBUG_ = true;
-		input = String.join(" ", args).replaceFirst("DEBUG", "").toUpperCase() + "$";
+		if (args.length != 0) {
+			if (args[0].equals("DEBUG")) CNST._DEBUG_ = true;
+			if (args.length > 1) {
+				input = String.join(" ", args).replaceFirst("DEBUG", "").toUpperCase() + "$";
+				return;
+			}
+		}
+		Console console = System.console();
+		input = console.readLine("Enter expression: ") + "$";
 	}
 
 	public void parse() throws Exception {
