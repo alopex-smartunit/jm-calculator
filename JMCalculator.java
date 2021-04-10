@@ -2,25 +2,21 @@ public class JMCalculator {
 
 	public static final String ARABIC = "0123456789", ROMAN = "NIVXLCDM", OPS = "+-*/$";
 
-	boolean DEBUG = false;
-
 	String input;
 
 	public int numberOfArabic = 0, numberOfRoman = 0;
 
-	public Polish polish = new Polish(true);
-
-	double result;
+	public Polish polish = new Polish();
 
 	public JMCalculator (String[] args) throws Exception {
 		if (args.length == 0) throw new Exception("Exception: no arguments");
-		if (args[0].equals("DEBUG")) DEBUG = true;
+		if (args[0].equals("DEBUG")) CNST._DEBUG_ = true;
 		input = String.join(" ", args).replaceFirst("DEBUG", "").toUpperCase() + "$";
 	}
 
 	void _debug(String message)
 	{
-		if (DEBUG) System.out.println(message);
+		if (CNST._DEBUG_) System.out.println(message);
 	}
 
 	public void parse() throws Exception {
@@ -29,7 +25,7 @@ public class JMCalculator {
 		boolean space = false;
 		int number = -1;
 
-		_debug("input: " + input);
+		_debug("Input string: " + input);
 
 		for (char ch: input.toCharArray()) {
 			if (ch == ' ') {
@@ -60,24 +56,21 @@ public class JMCalculator {
 			}
 
 			if (number >= 0) {
-				_debug("" + number);
-				polish.add(number);
-				_debug("->" + number);
+				polish.add((double) number);
 				number = -1;
-			}
-			if (op != 0 && space == false) {
-				_debug("" + op);
-				polish.addop(op);
 			}
 			if (op == '$') {
 				polish.end();
 				break;
 			}
+			if (op != 0 && space == false) {
+				polish.addop(op);
+			}
 		}
 		if (op != 0 && op != '$') throw new Exception("Exception: last operand missed");
 
-		_debug("numberOfArabic: " + numberOfArabic);
-		_debug("numberOfRoman: " + numberOfRoman);
+		_debug("Number of arabic numbers: " + numberOfArabic);
+		_debug("Number of roman numbers: " + numberOfRoman);
 		if (numberOfArabic * numberOfRoman != 0) throw new Exception("Exception: numbers must be all arabic or all roman");
 	}
 
@@ -99,8 +92,8 @@ public class JMCalculator {
         throw new Exception("Exception: error converting roman number");
     }	
 
-	public String print() {
-		return String.valueOf(result);
+	public double calculate() {
+		return polish.calculate();
 	}
 
 	public static void main (String[] args) {
@@ -108,7 +101,7 @@ public class JMCalculator {
 		try {
 			JMCalculator calc = new JMCalculator(args);
 			calc.parse();
-			System.out.println(calc.print());
+			System.out.println(calc.calculate());
 		}
 		catch (Exception e)	{
 			System.out.println(e.getMessage());

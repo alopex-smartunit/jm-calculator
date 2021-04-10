@@ -3,42 +3,57 @@ import java.util.Stack;
 
 public class Polish extends ArrayList {
 
-	boolean DEBUG = false;
-
 	public Stack opstack = new Stack();
 
 	char lastop = 0;
 
 	void _debug(String message)
 	{
-		if (DEBUG) System.out.println(message);
+		if (CNST._DEBUG_) System.out.println(message);
 	}
 
-	public Polish (boolean debug) {
+	public Polish () {
 		super();
-
-		if (debug) DEBUG = true;
-		_debug("Polish object initialized");
 	}
 
 	public void addop (char op) {
-		if (lastop == 0) opstack.push(op);
-		if ((lastop == '*' || lastop == '/') || ((lastop == '+' || lastop == '-') && (op == '+' || op == '-'))) {
-			add(lastop);
-			_debug("->" + lastop);
-			opstack.pop();
-			opstack.push(op);
+		while (!opstack.empty()) {
+			char top = opstack.peek().toString().charAt(0);
+			if ((top == '*' || top == '/') || ((top == '+' || top == '-') && (op == '+' || op == '-'))) {
+				add(opstack.pop().toString().charAt(0));
+			}
+			else break;
 		}
-		if ((lastop == '+' || lastop == '-') && (op == '*' || op == '/')) opstack.push(op);
-		lastop = op;
+		opstack.push(op);
 	}
 
 	public void end () {
 		while (!opstack.empty()) {
-			lastop = opstack.pop().toString().charAt(0);
-			add(lastop);
-			_debug("->" + lastop);
+			add(opstack.pop().toString().charAt(0));
 		}
-		_debug("=>" + toString());
+		_debug("Reverse polish notation array: " + toString());
+	}
+
+	public double calculate() {
+		for (Object el : this) {
+			if (el.getClass() == Double.class) {
+				opstack.push(el);
+			}
+			else switch ((char) el) {
+				case '+':
+					opstack.push((double) opstack.pop() + (double) opstack.pop());
+					break;
+				case '-':
+					opstack.push(-(double) opstack.pop() + (double) opstack.pop());
+					break;
+				case '*':
+					opstack.push((double) opstack.pop() * (double) opstack.pop());
+					break;
+				case '/':
+					opstack.push(1/(double) opstack.pop() * (double) opstack.pop());
+					break;
+			}
+ 		}
+ 		return (double) opstack.pop();
 	}
 }
