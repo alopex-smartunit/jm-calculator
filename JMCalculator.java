@@ -8,15 +8,15 @@ public class JMCalculator {
 
 	public Polish polish = new Polish();
 
+	static void _debug(String message)
+	{
+		if (CNST._DEBUG_) System.out.println(message);
+	}
+
 	public JMCalculator (String[] args) throws Exception {
 		if (args.length == 0) throw new Exception("Exception: no arguments");
 		if (args[0].equals("DEBUG")) CNST._DEBUG_ = true;
 		input = String.join(" ", args).replaceFirst("DEBUG", "").toUpperCase() + "$";
-	}
-
-	void _debug(String message)
-	{
-		if (CNST._DEBUG_) System.out.println(message);
 	}
 
 	public void parse() throws Exception {
@@ -92,8 +92,30 @@ public class JMCalculator {
         throw new Exception("Exception: error converting roman number");
     }	
 
-	public double calculate() {
-		return polish.calculate();
+ 	public static String toRoman(int number) {
+ 		if (number == 0) return "N";
+ 		int m = number / 1000; number -= 1000 * m;
+ 		int cm = number / 900; number -= 900 * cm;
+ 		int d = number / 500; number -= 500 * d;
+ 		int cd = number / 400; number -= 400 * cd;
+ 		int c = number / 100; number -= 100 * c;
+ 		int xc = number / 90; number -= 90 * xc;
+ 		int l = number / 50; number -= 50 * l;
+ 		int xl = number / 40; number -= 40 * xl;
+ 		int x = number / 10; number -= 10 * x;
+ 		int ix = number / 9; number -= 9 * ix;
+ 		int v = number / 5; number -= 5 * v;
+ 		int iv = number / 4; number -= 4 * iv;
+ 		int i = number;
+ 		return "M".repeat(m) + "CM".repeat(cm) + "D".repeat(d) + "CD".repeat(cd)
+ 			+ "C".repeat(c) + "XC".repeat(xc) + "L".repeat(l) + "XL".repeat(xl)
+ 			+ "X".repeat(x) + "IX".repeat(ix) + "V".repeat(v) + "IV".repeat(iv) + "I".repeat(i);
+    }	
+
+	public String calculate() {
+		if (numberOfArabic > 0) return ("" + polish.calculate());
+		if (numberOfRoman > 0) return toRoman((int) polish.calculate());
+		return "WTF???";
 	}
 
 	public static void main (String[] args) {
